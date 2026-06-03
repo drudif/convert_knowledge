@@ -1,0 +1,30 @@
+# Reverse-proxy do servidor único (Caddy — TLS automático).
+# Troque example.com pelo seu domínio e aponte os 4 subdomínios (A/AAAA) para o servidor.
+#
+# Topologia:
+#   knowledge.example.com -> convert-knowledge (8787)  [exposto p/ o browser do hub + downloads de PDF]
+#   bb.example.com        -> bb_cnvrt_v2       (3001)
+#   toads.example.com     -> toads             (3002)
+#   hub.example.com       -> vibe-hub          (estático, build do Vite)
+
+knowledge.example.com {
+	encode gzip
+	reverse_proxy localhost:8787
+}
+
+bb.example.com {
+	encode gzip
+	reverse_proxy localhost:3001
+}
+
+toads.example.com {
+	encode gzip
+	reverse_proxy localhost:3002
+}
+
+hub.example.com {
+	encode gzip
+	root * /var/www/vibe-hub/dist
+	try_files {path} /index.html
+	file_server
+}

@@ -1,0 +1,29 @@
+{
+  "docs": [
+    { "id": "tiktok-ignite-framework", "title": "TikTok Ignite Framework", "filename": "1_TikTok_Ignite_Framework.pdf", "platform": "tiktok" },
+    { "id": "tiktok-ignite-insights", "title": "TikTok Ignite Insights", "filename": "2_TikTok_Ignite_Insights.pdf", "platform": "tiktok" },
+    { "id": "tiktok-ignite-insights-2", "title": "TikTok Ignite Insights Volume 2", "filename": "2_TikTok_Ignite_Insights1.pdf", "platform": "tiktok" },
+    { "id": "tiktok-creative-codes", "title": "Códigos Criativos do TikTok", "filename": "codigos_criativos_pt_BR.pdf", "platform": "tiktok" },
+    { "id": "tiktok-follow-me", "title": "TikTok Follow Me Best Practices Playbook", "filename": "TikTok_Follow_Me_Best_Practices_Playbook_EN.pdf", "platform": "tiktok" },
+    { "id": "tiktok-playground", "title": "TikTok Playground - Performance", "filename": "TikTok_Playground-Performance.pdf", "platform": "tiktok" },
+    { "id": "tiktok-creative-best-practices", "title": "TikTok Creative Best Practices", "filename": "Tiktok-CreativeBestPractices.pdf", "platform": "tiktok" },
+    { "id": "thought-paper-creative-tactics", "title": "Thought Paper: Creative Tactics For Performance", "filename": "ThoughtPaper_CreativeTacticsForPerformance_ptbr.pdf", "platform": "tiktok" },
+    { "id": "general-creative-day", "title": "Creative Day Convert", "filename": "CREATIVEDAYCONVERT19.08.pdf", "platform": "tiktok" },
+    { "id": "meta-real-talk", "title": "Meta Real Talk Agency Superpack", "filename": "MetaRealTalkAgencySuperpack.pdf", "platform": "meta" },
+    { "id": "meta-stories-best-practices", "title": "Boas práticas para criativos do Stories", "filename": "BoaspraticasparacriativosdoStories_CentraldeAjudadaMetaparaEmpresas.pdf", "platform": "meta" },
+    { "id": "meta-reels-guide", "title": "Reels Ads Guide", "filename": "ReelsAdsGuide.pdf", "platform": "meta" },
+    { "id": "meta-general-a", "title": "Guia Geral A", "filename": "GERALA.pdf", "platform": "meta", "hidden": true },
+    { "id": "meta-general-b", "title": "Guia Geral B", "filename": "GERALB.pdf", "platform": "meta", "hidden": true },
+    { "id": "cta", "title": "Guia de CTA", "filename": "CTA.pdf", "platform": "general", "hidden": true },
+    { "id": "google-creative-excellence", "title": "Creative Excellence Google", "filename": "CreativeExcellenceGOOGLE.pdf", "platform": "google" },
+    { "id": "google-display-guide", "title": "Anúncios de Display - Guia de Práticas Recomendadas", "filename": "Anunciosdedisplay_umguiadepraticasrecomendadasparacriativos-AjudadoGoogleAds.pdf", "platform": "google" },
+    { "id": "google-responsive-display", "title": "Práticas Recomendadas para Anúncios Responsivos de Display", "filename": "Guiadepraticasrecomendadasparaanunciosresponsivosdedisplay-AjudadoGoogleAds.pdf", "platform": "google" },
+    { "id": "google-youtube-abcd", "title": "O ABCD da Criação de Anúncios em Vídeo Eficientes", "filename": "OABCDdacriacaodeanunciosemvideoeficientes-PublicidadenoYouTube.pdf", "platform": "google" },
+    { "id": "google-youtube-abcd-think", "title": "Veja os ABCDs do YouTube - Think with Google", "filename": "VejaosABCDsdoYouTube-ThinkwithGoogle.pdf", "platform": "google" },
+    { "id": "google-demand-gen", "title": "Guia de Excelência em Criativos para Campanhas Demand Gen", "filename": "GuiadeexcelenciaemcriativosparacampanhasDemandGen-GoogleAdsAjuda.pdf", "platform": "google" },
+    { "id": "google-display-optimize", "title": "Otimize as Campanhas da Rede de Display", "filename": "OtimizeascampanhasdaRededeDisplay-GoogleAdsAjuda.pdf", "platform": "google" },
+    { "id": "google-creative-performance", "title": "Práticas Recomendadas para o Desempenho dos Criativos", "filename": "Praticasrecomendadasparaodesempenhodoscriativos-GoogleAdsAjuda.pdf", "platform": "google" },
+    { "id": "criativos-performance-marketing", "title": "Criativos mais eficientes para seu marketing de performance", "filename": "pt-BR_Criativos_mais_eficientes_para_seu_marketing_de_performance.pdf", "platform": "google" },
+    { "id": "general-creative-best-practices", "title": "Creative Best Practices Guide", "filename": "creative_best_practices_guide.pdf", "platform": "google" }
+  ]
+}

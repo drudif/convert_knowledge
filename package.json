@@ -1,0 +1,26 @@
+{
+  "name": "convert-knowledge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Serviço central de conhecimento (RAG) compartilhado pelos projetos Convert. Fonte única da base de .md; PDFs apenas para download.",
+  "type": "module",
+  "scripts": {
+    "ingest": "node ingest/build-index.mjs",
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "multer": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/multer": "^2.1.0",
+    "@types/node": "^22",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
