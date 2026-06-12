@@ -73,9 +73,10 @@ app.post("/search", requireKey, async (req, res) => {
   if (!query || typeof query !== "string") {
     return res.status(400).json({ error: "campo 'query' (string) é obrigatório" });
   }
+  const effectiveTopK = Math.max(1, Math.min(Number(topK) || 6, 20));
   try {
     const embedding = await embedQuery(query);
-    const result = search(embedding, { platform, topK, includeHidden });
+    const result = search(embedding, { platform, topK: effectiveTopK, includeHidden });
     res.json(result);
   } catch (e) {
     res.status(500).json({ error: (e as Error).message });
