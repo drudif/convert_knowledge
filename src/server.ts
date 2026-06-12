@@ -18,7 +18,7 @@ import multer from "multer";
 import { embedQuery } from "./embed.js";
 import { docMetadata, indexStats, loadIndex, pdfFilenames, search, survey } from "./store.js";
 import { addDoc, findById, setDisabled, type DocMeta } from "./metadata-store.js";
-import { embedAndAddDocument } from "./indexer.js";
+import { embedAndAddDocument, reconcileIndex } from "./indexer.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -237,4 +237,18 @@ app.listen(PORT, () => {
   } catch {
     console.log("  ⚠ índice ainda não gerado — rode 'pnpm ingest'");
   }
+  // Reconcilia o índice com os .md (incremental) em background — reflete edições
+  // nos .md (ex.: aplicadas pelo applier) sem reembedar o acervo inteiro nem
+  // atrasar o boot. Falha de forma segura: em erro, mantém o índice atual.
+  reconcileIndex()
+    .then((r) => {
+      if (r.updated.length || r.removed.length) {
+        console.log(`[reconcile] reembedados: ${r.updated.length} [${r.updated.join(", ")}] · removidos: ${r.removed.length} [${r.removed.join(", ")}]`);
+      } else if (r.baseline) {
+        console.log(`[reconcile] baseline de hashes registrado para ${r.baseline} arquivo(s) — índice já em dia`);
+      } else {
+        console.log("[reconcile] índice já em dia com os .md");
+      }
+    })
+    .catch((e) => console.error(`[reconcile] erro (índice atual mantido): ${(e as Error).message}`));
 });

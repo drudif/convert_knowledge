@@ -10,6 +10,7 @@
 
 import fs from "fs";
 import path from "path";
+import crypto from "crypto";
 import { fileURLToPath } from "url";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -109,9 +110,12 @@ async function main() {
 
   const index = [];
   const perFile = {};
+  const fileHashes = {};
 
   for (const relPath of files) {
-    const raw = fs.readFileSync(path.join(KB_DIR, relPath), "utf-8");
+    const full = path.join(KB_DIR, relPath);
+    const raw = fs.readFileSync(full, "utf-8");
+    fileHashes[relPath] = crypto.createHash("sha256").update(fs.readFileSync(full)).digest("hex");
     const clean = stripFrontMatter(raw).replace(/\s+/g, " ").trim();
     const chunks = chunkText(clean);
     let kept = 0;
@@ -134,7 +138,7 @@ async function main() {
   const dims = index[0]?.embedding?.length ?? 0;
   fs.writeFileSync(
     OUT_FILE,
-    JSON.stringify({ model: EMBED_MODEL, dims, builtFiles: perFile, chunks: index })
+    JSON.stringify({ model: EMBED_MODEL, dims, builtFiles: perFile, fileHashes, chunks: index })
   );
   console.log(`\n✅ Índice salvo: ${path.relative(ROOT, OUT_FILE)}`);
   console.log(`   ${index.length} chunks · ${dims} dims · ${files.length} documentos`);

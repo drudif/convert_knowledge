@@ -32,6 +32,9 @@ interface IndexFile {
   model: string;
   dims: number;
   builtFiles: Record<string, number>;
+  // hash (sha256) do conteúdo de cada .md no momento da indexação — usado pelo
+  // reconcile incremental no boot para detectar arquivos alterados.
+  fileHashes?: Record<string, string>;
   chunks: RawChunk[];
 }
 
@@ -105,6 +108,23 @@ export function removeChunksBySource(source: string): void {
 export function indexStats() {
   const idx = loadIndex();
   return { model: idx.model, dims: idx.dims, chunks: idx.chunks.length, documents: Object.keys(idx.builtFiles).length };
+}
+
+/** Sources (.md relativos) atualmente presentes no índice. */
+export function listIndexedSources(): string[] {
+  return Object.keys(loadIndex().builtFiles ?? {});
+}
+
+/** Hashes dos .md registrados no índice (source → sha256). */
+export function getFileHashes(): Record<string, string> {
+  return { ...(loadIndex().fileHashes ?? {}) };
+}
+
+/** Persiste o mapa de hashes dos .md no índice. */
+export function saveFileHashes(hashes: Record<string, string>): void {
+  const idx = loadIndex();
+  idx.fileHashes = hashes;
+  saveIndex();
 }
 
 export function docMetadata() {
