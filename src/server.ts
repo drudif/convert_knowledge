@@ -16,7 +16,7 @@ import cors from "cors";
 import express from "express";
 import multer from "multer";
 import { embedQuery } from "./embed.js";
-import { docMetadata, indexStats, loadIndex, pdfFilenames, search } from "./store.js";
+import { docMetadata, indexStats, loadIndex, pdfFilenames, search, survey } from "./store.js";
 import { addDoc, findById, setDisabled, type DocMeta } from "./metadata-store.js";
 import { embedAndAddDocument } from "./indexer.js";
 
@@ -69,14 +69,21 @@ app.get("/documents", requireKey, (_req, res) => {
 });
 
 app.post("/search", requireKey, async (req, res) => {
-  const { query, platform = null, topK = 6, includeHidden = true } = req.body ?? {};
+  const { query, platform = null, topK = 6, includeHidden = true, coverage, perDoc } = req.body ?? {};
   if (!query || typeof query !== "string") {
     return res.status(400).json({ error: "campo 'query' (string) é obrigatório" });
   }
-  const effectiveTopK = Math.max(1, Math.min(Number(topK) || 6, 20));
   try {
     const embedding = await embedQuery(query);
-    const result = search(embedding, { platform, topK: effectiveTopK, includeHidden });
+    let result;
+    if (coverage === "survey") {
+      // Cobertura ampla: top-N chunks de CADA doc da plataforma (todas as fontes).
+      const effPerDoc = Math.max(1, Math.min(Number(perDoc) || 2, 5));
+      result = survey(embedding, { platform, perDoc: effPerDoc, includeHidden });
+    } else {
+      const effectiveTopK = Math.max(1, Math.min(Number(topK) || 6, 20));
+      result = search(embedding, { platform, topK: effectiveTopK, includeHidden });
+    }
     res.json(result);
   } catch (e) {
     res.status(500).json({ error: (e as Error).message });

@@ -126,13 +126,13 @@ function cosine(a: number[], b: number[]): number {
   return dot / (Math.sqrt(na) * Math.sqrt(nb));
 }
 
-export function search(
+/** Pontua e filtra todos os chunks do índice (sem cortar por topK). */
+function scoreChunks(
   queryEmbedding: number[],
-  opts: { platform?: string | null; topK?: number; includeHidden?: boolean } = {}
-): SearchResult {
-  const { platform = null, topK = 6, includeHidden = true } = opts;
+  platform: string | null,
+  includeHidden: boolean
+): SearchHit[] {
   const idx = loadIndex();
-
   const scored: SearchHit[] = [];
   for (const c of idx.chunks) {
     const doc = resolveDoc(c.source);
@@ -151,14 +151,15 @@ export function search(
       hidden: !!doc.hidden,
     });
   }
-  scored.sort((a, b) => b.score - a.score);
-  const hits = scored.slice(0, topK);
+  return scored;
+}
 
+/** Monta ragContext (com [DOC:id:página]) + sources (docs únicos, não-ocultos). */
+function buildResult(hits: SearchHit[]): SearchResult {
   const ragContext = hits
     .map((h) => `[DOC:${h.docId}:${h.page ?? h.chunk}]\n${h.text}`)
     .join("\n\n---\n\n");
 
-  // sources: documentos únicos e NÃO ocultos (para citação visível ao usuário).
   const seen = new Set<string>();
   const sources = [] as SearchResult["sources"];
   for (const h of hits) {
@@ -175,4 +176,45 @@ export function search(
   }
 
   return { ragContext, chunks: hits, sources };
+}
+
+/** Busca por similaridade: top-K chunks globais. */
+export function search(
+  queryEmbedding: number[],
+  opts: { platform?: string | null; topK?: number; includeHidden?: boolean } = {}
+): SearchResult {
+  const { platform = null, topK = 6, includeHidden = true } = opts;
+  const scored = scoreChunks(queryEmbedding, platform, includeHidden);
+  scored.sort((a, b) => b.score - a.score);
+  return buildResult(scored.slice(0, topK));
+}
+
+/**
+ * Survey: cobertura ampla. Em vez do top-K global, pega os top-`perDoc` chunks
+ * de CADA documento (garante que todas as fontes da plataforma entrem no
+ * contexto). Ordena por relevância e limita a `maxChunks` por segurança.
+ */
+export function survey(
+  queryEmbedding: number[],
+  opts: { platform?: string | null; perDoc?: number; includeHidden?: boolean; maxChunks?: number } = {}
+): SearchResult {
+  const { platform = null, perDoc = 2, includeHidden = true, maxChunks = 60 } = opts;
+  const scored = scoreChunks(queryEmbedding, platform, includeHidden);
+
+  const byDoc = new Map<string, SearchHit[]>();
+  for (const h of scored) {
+    const arr = byDoc.get(h.docId) ?? [];
+    arr.push(h);
+    byDoc.set(h.docId, arr);
+  }
+
+  let hits: SearchHit[] = [];
+  for (const arr of byDoc.values()) {
+    arr.sort((a, b) => b.score - a.score);
+    hits.push(...arr.slice(0, perDoc));
+  }
+  hits.sort((a, b) => b.score - a.score);
+  if (hits.length > maxChunks) hits = hits.slice(0, maxChunks);
+
+  return buildResult(hits);
 }
