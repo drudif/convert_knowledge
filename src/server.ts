@@ -103,7 +103,10 @@ function findPdf(filename: string): string | null {
   return found;
 }
 
-app.get("/docs/:file", requireKey, (req, res) => {
+// Download público: links de PDF clicados no browser não enviam x-api-key.
+// Só serve PDFs de docs visíveis existentes no disco (ocultos não têm PDF → 404).
+// Busca e metadados seguem protegidos (/search e /documents exigem chave).
+app.get("/docs/:file", (req, res) => {
   const file = path.basename(req.params.file);
   if (!pdfFilenames().has(file)) return res.status(404).json({ error: "documento não encontrado" });
   const full = findPdf(file);
